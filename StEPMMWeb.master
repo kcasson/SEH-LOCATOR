@@ -1,0 +1,92 @@
+﻿<%@ Master Language="VB" CodeFile="StEPMMWeb.master.vb" Inherits="StEPMMWeb" %>
+<%@ Register TagPrefix="MMA" Namespace="Web.UI.AdminControls"  %>
+<%@ Register TagPrefix="MMM" Namespace="Web.UI.MiscControls"  %>
+<%@ Register Namespace="Web.UI.MiscControls" TagPrefix="MMM"   %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>PMM Web</title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <link href="StyleSheet.css" rel="stylesheet" type="text/css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <script language="javascript" type="text/javascript">
+     
+        function popitup(url) 
+        {
+	        newwindow=window.open(url,'name','height=200,width=150');
+	        if (window.focus) {newwindow.focus()}
+	        return false;
+        }
+		function toggleMenu(nr)
+		{
+			vista = (document.getElementById(nr).style.display == 'none') ? 'block' : 'none';
+			document.getElementById(nr).style.display = vista;
+		}
+      
+       </script>
+
+</head>
+<body onload="LoadFocus();" style="background-color:#017AC3;">
+    <form id="form1" runat="server"><div>
+    <table cellpadding="0" cellspacing="0" style="background:white; height:730;" align="center"><tr><td>&nbsp;</td></tr><tr ><td>
+        <table cellpadding="0" cellspacing="0" width="100%">
+           <tr><td  width="53px">
+               <img alt="StELogo" src="Images/StELogo.PNG"
+                   style="width: 288px; height: 60px;" /></td>
+               <td valign="middle" style="font-family:Monotype Corsiva; 
+                       font-size:medium; font-weight:bold;">
+                                    <img alt="Materials Management" src="Images/p_computers1.jpg" 
+                       
+                       style="border-style:groove; border-color: inherit; width: 437px; height: 49px; border-width:thin;" /></td></tr></table><table width="90%"></table>
+                       <table width="730" cellpadding="0" cellspacing="0"><tr><td>
+                        <MMA:AdminMenu   ID="Menu1" runat="server" Orientation="Vertical" DynamicMenuItemStyle-Height="25" Height="25" ForeColor="DarkBlue" Font-Bold="true" DynamicMenuStyle-ForeColor="Black"  Font-Size="Small">
+                  <Items>
+                    <asp:MenuItem  Text="&nbsp;Site Administration" Value="Administration" ToolTip="Administer Site (Only available to the PMM Admin group)">
+                    <asp:MenuItem Text="Site"><asp:MenuItem  Text="Edit Support Links" NavigateUrl="Site/SiteLinksEdit.aspx" ToolTip="Use this option to edit Support Menu" Value="Edit Support Links" 
+                             Enabled="true"  ></asp:MenuItem><asp:MenuItem Text="Security" NavigateUrl="Site/SiteSecurity.aspx" Enabled="true" ToolTip="This option is used for editing site security."></asp:MenuItem></asp:MenuItem>
+                      <asp:MenuItem Text="PMM" ><asp:MenuItem Text="Passwords" NavigateUrl="~/Site/PMMCryptography.aspx" Enabled="true"></asp:MenuItem><asp:MenuItem Text="Revive PMM User" NavigateUrl="~/Site/PMMUserRevive.aspx" ToolTip="Use this link to re-enable deleted PMM Users"></asp:MenuItem></asp:MenuItem>
+                   </asp:MenuItem>
+                    </Items>
+                </MMA:AdminMenu>
+                      
+                </td></tr></table><table width="100%"><tr><td><hr /></td></tr></table><table><tr><td></td><td>
+        <table cellpadding="0" cellspacing="0"><tr valign="top"><td>
+        <table cellpadding="0" cellspacing="0">
+        <tr><td valign="top"><table cellpadding="0" cellspacing="0" width="100%"><tr class="leftNav"><td align="center" height="20">PMM Support Links</td></tr></table>
+        <asp:Menu ID="mnuLinks" runat="server" ForeColor="White" CssClass="leftNav"  DynamicMenuStyle-Height="45" DynamicMenuItemStyle-Height="25" StaticMenuItemStyle-Height="25"  Height="150" DynamicSelectedStyle-Height="150" 
+                    DynamicMenuItemStyle-CssClass="leftNavSub"  StaticBottomSeparatorImageUrl="~/Images/menuSep.png"
+                     DynamicBottomSeparatorImageUrl="~/Images/menuSepSub.PNG"  ></asp:Menu>
+                    </td></tr></table>
+                    <table cellpadding="0" cellspacing="0" width="100%">
+            <tr class="leftNav"><td>&nbsp;</td></tr>
+            <tr class="leftNav"><td><b>User:</b> <asp:Label ID="lblUser" runat="server"></asp:Label></td></tr>
+            <tr class="leftNav"><td><b>IP:</b> <asp:Label ID="lblIP" runat="server">
+                       </asp:Label></td></tr><tr valign="top"><td>&nbsp;</td></tr></table></td><td>
+        <table cellpadding="0" cellspacing="0">
+        <tr valign="top"><td><%--<asp:DataList ID="dlLinks" runat="server">
+            <HeaderStyle CssClass="leftNav" />
+            <HeaderTemplate><table width="100%"><tr><td align="center" style="font-size:small;">PMM Support Links</td></tr><tr><td><hr /></td></tr></table></HeaderTemplate>
+            <ItemStyle CssClass="leftNav"   />
+            <ItemTemplate><nobr>• <asp:Menu id="mnuLink" runat="server" ></asp:Menu></nobr><br /><hr /></ItemTemplate>
+            <FooterStyle CssClass="leftNav" />
+            <Footertemplate></Footertemplate>
+            </asp:DataList>--%>
+            </td><td valign="top">
+                   
+        <div>
+            <MMM:MenuHeadControl runat="server" ID="MenuHead"></MMM:MenuHeadControl>
+            <table><tr valign="top"><td >&nbsp;</td>
+            <td valign="top"><asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+            
+            </asp:ContentPlaceHolder></td></tr></table>
+        </div>
+     </td></tr></table></td></tr></table>
+    <table><tr><td><!--<a href="popupex.html" onclick="return popitup('popupex.html')">Link to popup</a>-->
+</td></tr></table></td></tr></table></td></tr></table> 
+           </div>
+    </form>
+</body>
+</html>

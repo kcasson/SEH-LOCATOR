@@ -1,0 +1,54 @@
+﻿<%@ Master Language="VB" CodeFile="StEMM.master.vb" Inherits="StEMM" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head runat="server" > 
+    <title>St. Elizabeth Medical Center - Materials Management</title>
+    <link href="StyleSheet.css" type="text/css" rel="Stylesheet"  />
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+
+
+
+    <style type="text/css">
+        .style1
+        {
+            width: 162px;
+        }
+        .style2
+        {
+            width: 53px;
+        }
+    </style>
+
+
+
+
+</head>
+<body onload="LoadFocus();"  >
+    <form id="form1" runat="server"  >
+       <table cellpadding="0" cellspacing="0"  >
+           <tr><td  width="53px">
+               <img alt="StELogo" src="Images/StELogo.PNG" 
+                   style="width: 288px; height: 60px;" /></td>
+               <td   align="center" valign="middle" style="font-family:Monotype Corsiva; 
+                       font-size:medium; font-weight:bold;">
+                      
+                       <img 
+                       alt="Materials Management" src="Images/p_computers1.jpg" 
+                       
+                       style="border-style:groove;  width: 437px; height: 49px; border-width:thin;" /></td></tr></table><table width="90%"><tr><td><hr  /></td></tr></table>
+    <div>
+        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+         
+        
+        
+        </asp:ContentPlaceHolder>
+    </div>
+    </form>
+</body>
+</html>

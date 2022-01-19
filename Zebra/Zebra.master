@@ -1,0 +1,212 @@
+﻿<%@ Master Language="VB" CodeFile="Zebra.master.vb" Inherits="Site" AutoEventWireup="true"  %>
+<%@ register TagPrefix="MMUC" TagName="PageLoadingDisplay" Src="../Controls/PageLoadingDisplay.ascx"  %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server">
+    <title></title>
+    <link href="Styles/StyleSheet.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        function tabChange(selected) {
+            if (selected != null) {
+                var btn = document.getElementById("ctl00_btnTabChange");
+                var lbl = document.getElementById("ctl00_lblSelectedTab");
+                var sw = document.getElementById("ctl00_lblTabSwitch");
+
+                lbl.value = selected;
+                sw.value = "1"
+                btn.click();
+
+            }
+        }
+
+        function resetTab() {
+            var lbl = document.getElementById("ctl00_lblSelectedTab");
+            lbl.value = "";
+        }
+        function centerDiv(obj) {
+            //center the passed in object on the page
+            var dv = document.getElementById(obj);
+            var x = Math.abs((document.body.clientWidth / 2) - (dv.offsetWidth/2));
+            var y = Math.abs((document.body.clientHeight / 2)  - (dv.offsetHeight/2));
+            dv.style.top = y;
+            dv.style.left = x;
+
+        }
+
+        function cancelLocationAdd() {
+//            document.getElementById('ctl00_divMain').className = '';
+//            document.getElementById('ctl00_divAddPage').className = 'zebraNoDisplay';
+            document.location = "Default.aspx";
+            //window.location.reload();
+        }
+
+        function btnAddLocation_Click() {
+            var svrid = document.getElementById('ctl00_txtServerId');
+            var rqvid = document.getElementById('rqvServerId');
+            var svrnm = document.getElementById('ctl00_txtServerName');
+            var rqvnm = document.getElementById('rqvServerName');
+            var svrlo = document.getElementById('ctl00_ddlLocation');
+            var rqvlo = document.getElementById('rqvddlLocation');
+
+            //initialize all indicators
+            rqvid.style.display = 'none';
+            rqvnm.style.display = 'none';
+            rqvlo.style.display = 'none';
+            
+            //check required info before submitting form
+            if (svrid.value=='') {
+                alert('Please enter a server id!');
+                svrid.focus();
+                //the following code is causing alignment issues on the page...
+                //rqvid.style.display='block'  
+                
+            } else if (svrnm.value=='') {
+                alert('Please enter a server name!');
+                svrnm.focus();
+                //rqvnm.style.display = 'block';  
+            } else if (svrlo.value==0) {
+                alert('Please select a location!');
+                svrlo.focus();
+                //rqvddlLocation.style.display = 'block'; 
+            } else { //we have it all, submit the form
+                document.getElementById('ctl00_btnAddLocation').click();
+            }
+        }
+    </script>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body onload="centerDiv('ctl00_divAddPage');">
+
+    <form runat="server">
+    <!-- this section begins the Add Location function -->
+    <div id="divAddPage" runat="server" class="zebraNoDisplay">
+        <table width="100%" >
+            <tr valign="top"><td></td></tr>
+            <!-- Header -->
+            <tr valign="top"><td height="2px" colspan="2" style=" background-repeat:no-repeat;" background="../Images/TabLine.PNG"><font style="font-weight:bold;">Add/Edit Location</font></td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <nobr><tr><td class="appLabel" align="right" width="125px">Server ID:</td><td style="white-space:nowrap;"><asp:TextBox ID="txtServerId" runat="server" Width="75px" MaxLength="10" ToolTip="Enter Server ID (Max length is 10 characters)"></asp:TextBox>
+                <span id="rqvServerId" class="zebraError" style="display:none;">*</span>
+                    <asp:DropDownList ID="ddlEditExistingLocation" AutoPostBack="true" runat="server" Width="260px"></asp:DropDownList></td></tr></nobr>
+            <tr><td class="appLabel" align="right" width="125px">Server Name:</td><td><asp:TextBox ID="txtServerName" runat="server" Width="350px" MaxLength="10" ToolTip="Enter Server Name (Max length is 10 characters"></asp:TextBox>
+                 <span id="rqvServerName" class="zebraError" style="display:none; white-space:nowrap;">*</span></td></tr>
+            
+            <tr><td class="appLabel" align="right" width="125px">PeopleSoft ShipTo:</td><td valign="bottom"><nobr><asp:DropDownList ID="ddlLocation" ToolTip="Select PMM Label printing location" runat="server" Width="425px"></asp:DropDownList>
+                 <span id="rqvddlLocation" class="zebraError" style="display:none;">*</span></nobr></td></tr>
+            <tr><td class="appLabel" align="right" width="125px"></td><td><br /><asp:CheckBox ID="ckIgnorePatCharge" CssClass="appLabel" runat="server" Text="Ignore Patient Charge" /></td></tr>
+            <tr><td class="appLabel" align="right" width="125px"></td><td><br /><asp:CheckBox ID="ckSuppSepLabels" CssClass="appLabel" runat="server" Text="Suppress Separator Labels" /></td></tr>
+            <tr height="140px"><td></td></tr>
+            <tr><td></td></tr>
+         </table>
+            <!-- Submit button -->
+           <div class="zebraButton">
+                <table height="100%" width="100%" style="text-align:center;">
+                    <tr><td background="../Images/Button.PNG"  onclick="btnAddLocation_Click();"><font style="font-weight:bold;">Save</font></td></tr>
+                    <tr style="display:none;" ><td><asp:Button ID="btnAddLocation" runat="server" /></td></tr>
+                </table>
+                
+            </div>
+            <!-- Cancel button -->
+            <div class="zebraButton">
+                <table height="100%" width="100%" style="text-align:center;"><tr><td background="../Images/Button.PNG"  onclick="cancelLocationAdd();"><font style="font-weight:bold;">Cancel</font></td></tr></table>
+            </div>&nbsp;
+            <table><tr><td colspan="2" class="zebraError"><asp:Label ID="lblError" runat="server"></asp:Label></td></tr></table>
+    </div>
+
+        <!-- this section begins the page waiting disply -->
+    <div id="divLoading" runat="server" class="zebraNoDisplay">
+        <table width="100%" height="100%">
+            <!-- Header -->
+            <tr><td align="center" valign="middle">
+            <img alt="image" src="../Images/Loading.gif" height="35" width="35" /><br /><br /><b>Working&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;. </td></tr>
+        </table>
+    </div>
+
+
+
+    <!-- main page content starts here -->
+    <div id="divMain" runat="server">
+    <div id="divPage" runat="server" class="page">
+    <table cellpadding="0" cellspacing="0" width="100%"><tr><td background="../Images/TabLine.PNG"  height="22px"><font style="font-weight:bold;">&nbsp;Zebra Label Administration</font></td></tr></table>   
+        <div>
+               <asp:Menu ID="Menu1" runat="server" CssClass="loginDisplay" StaticMenuItemStyle-CssClass="loginDisplay" RenderingMode="Table" Orientation="Horizontal" DynamicMenuItemStyle-CssClass="loginDisplay"  >
+                    <Items>
+                        <asp:MenuItem Text="File" Value="File" Selectable="false">
+                            <asp:MenuItem Text="Add/Edit Location" NavigateUrl="~/Zebra/Default.aspx?act=LocAdd" ToolTip="Add a label printing location" 
+                                    Value="Location"></asp:MenuItem>
+                           </asp:MenuItem>
+                    </Items>
+                </asp:Menu>
+                <div class="loginDisplay"><br /><br />
+            <table><tr align="left"><td align="right"><b>Location:</b></td><td>
+                <asp:DropDownList Width="150px" id="ddlWorkstation" CssClass="loginDisplay" AutoPostBack="true" runat="server"></asp:DropDownList></td>
+            <td><asp:Label ID="lblLocation" runat="server"></asp:Label></td></tr></table>
+            </div>
+            <table  cellpadding="0" cellspacing="0" width="100%">
+            <tr><td>
+                <asp:Menu ID="NavigationMenu" RenderingMode="Table" runat="server"  
+                        EnableViewState="false" IncludeStyleBlock="false"  Orientation="Horizontal" >
+                    <Items>
+
+                    </Items>
+                </asp:Menu>
+                <img src="../Images/TabLine.png"alt="tabline" style="padding:0px 4px 0px 0px;" width="100%" height="22px" />
+            </td></tr><tr><td style="display:none;"><a type="text/plain"></a><asp:Button ID="btnTabChange" runat="server" />
+         <input type="text" runat="server" id="lblSelectedTab" /><input id="lblTabSwitch" runat="server" /></td></tr></table>
+        </div>
+        <div class="main">
+            <asp:MultiView 
+                ID="MultiView1"
+                runat="server"
+                ActiveViewIndex="0"  >
+               <asp:View ID="Tab1" runat="server"  >
+     
+                    <table width="600" height="500" cellpadding="0" cellspacing="0" >
+                        
+                        <tr valign="top">
+                            <td class="TabArea" style="width: 600px" align="left" valign="top">
+                            <asp:CheckBox ID="ckTab1"  runat="server" AutoPostBack="True" />
+                                <br />
+                                <br />
+                                <asp:ContentPlaceHolder ID="cnt1" runat="server" />
+
+                            </td>
+                        </tr>
+                    </table>
+
+                 </asp:View>
+                     <asp:View ID="Tab2" runat="server">
+                    <table width="600px" height="500px" cellpadding="0" cellspacing="0">
+                        <tr valign="top">
+                            <td class="TabArea" style="width: 600px"  align="left" valign="top">
+                            <asp:CheckBox ID="ckTab2" runat="server" AutoPostBack="True" />
+                            <br />
+                            <br />
+                            <asp:ContentPlaceHolder ID="cnt2" runat="server"/>
+   
+                            </td>
+                        </tr>
+                    </table>
+                </asp:View>
+                <asp:View ID="Tab3" runat="server">
+                    <table width="600px" height="500px" cellpadding="0" cellspacing="0" >
+                        <tr valign="top">
+                            <td class="TabArea" style="width: 600px">
+                            <asp:CheckBox ID="ckTab3"  runat="server" AutoPostBack="True" />
+                            <br />
+                            <br />
+                            <asp:ContentPlaceHolder ID="cnt3" runat="server"/>
+      
+                            </td>
+                        </tr>
+                    </table>
+                </asp:View>
+            </asp:MultiView>
+        </div>
+    </div>
+    </div>
+    </form>
+</body>
+</html>
