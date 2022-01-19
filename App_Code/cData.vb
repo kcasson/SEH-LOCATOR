@@ -85,8 +85,8 @@ Public Class cData
         sql.Append("left outer join PS_BUS_UNIT_TBL_IN bti on bti.BUSINESS_UNIT = dli.BUSINESS_UNIT " & vbCrLf)
         sql.Append("left outer join PS_LOCATION_TBL lt on lt.LOCATION = bti.LOCATION and lt.SETID = 'SHARE' " & vbCrLf)
         sql.Append("And lt.EFF_STATUS = 'A' and lt.EFFDT = (select max(EFFDT) from PS_LOCATION_TBL where SETID = lt.SETID and LOCATION = lt.LOCATION and EFFDT <= cast(getdate() as date))" & vbCrLf)
-        sql.Append("where piv.QTY > 0 " & vbCrLf)
-        sql.Append(" and i.INV_ITEM_ID like '" & pmmNo & "%' " & vbCrLf)
+        sql.Append("where " & vbCrLf)
+        sql.Append(" i.INV_ITEM_ID like '" & pmmNo & "%' " & vbCrLf)
         If mfrNo <> String.Empty Then
             sql.Append(" and im.MFG_ITM_ID like '" & mfrNo & "%' " & vbCrLf)
         End If

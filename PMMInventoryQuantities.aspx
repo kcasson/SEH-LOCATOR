@@ -262,7 +262,7 @@
                     </tr>
                     <td class="itemlisthead" valign="top">                       
                     <table style="border-style:groove;" cellpadding="0" cellspacing="0" width="98%">
-                        <tr height="1px"><td>Inventory (Locations with an Available Quantity)</td></tr>
+                        <tr height="1px"><td>Inventory</td></tr>
                         <tr height="1px"><td><hr /></td></tr>
                         <tr><td>
                         <asp:GridView  ID="gvInventory" runat="server" AutoGenerateColumns="false" AlternatingRowStyle-CssClass="itemlistitemalt"
