@@ -76,11 +76,11 @@ Public Class cItemBinLocations
         Dim logNumber As Integer
         _CurrentSessionUser = user
         'Log time start
-        logNumber = LogProcTime(0, "SEMC_UP_GET_ITEM_BIN_QTY", "mfrNumer='" & mfrNumber & "' | pmmNumber='" & pmmNumber & "' | desc='" & desc & "'")
+        'logNumber = LogProcTime(0, "SEMC_UP_GET_ITEM_BIN_QTY", "mfrNumer='" & mfrNumber & "' | pmmNumber='" & pmmNumber & "' | desc='" & desc & "'")
         'Load specific items based on search value
         Dim ds As DataSet = GetBinQuantities(mfrNumber, pmmNumber, desc)
         'Log time finish
-        LogProcTime(logNumber, "SEMC_UP_GET_ITEM_BIN_QTY")
+        'LogProcTime(logNumber, "SEMC_UP_GET_ITEM_BIN_QTY")
         If Load(ds) Then
             _Status = True
         End If

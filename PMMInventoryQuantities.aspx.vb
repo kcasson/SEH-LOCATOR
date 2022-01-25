@@ -35,6 +35,19 @@ Partial Class SPDPerpetualInventory
             Session("itemDO") = value
         End Set
     End Property
+
+    Private Property subItem() As cSubstituteItemBinLocations
+        Get
+            If Not IsNothing(Session("subItem")) Then
+                Return Session("subItem")
+            Else
+                Return New cSubstituteItemBinLocations
+            End If
+        End Get
+        Set(ByVal value As cSubstituteItemBinLocations)
+            Session("subItem") = value
+        End Set
+    End Property
     Private Property itemInvoices() As DataSet
         Get
             If Not IsNothing(Session("itemInvoices")) Then
@@ -72,7 +85,7 @@ Partial Class SPDPerpetualInventory
     End Sub
 
     Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
-
+        ClearSubItems()
         ClearItemInfo()
         itemDO = New cItemBinLocations(txtMfrNo.Value, InitControl.Value, txtDesc.Value, IIf(Not IsNothing(Session("oUser")), Session("oUser"), New cUserInfo()))
         'Pass the user information to the class
@@ -156,7 +169,7 @@ Partial Class SPDPerpetualInventory
     End Sub
 
     Protected Sub lvItems_SelectedIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ListViewSelectEventArgs) Handles lvItems.SelectedIndexChanging
-
+        lblHasNoSubs.Text = String.Empty
         With lvItems
             .SelectedIndex = e.NewSelectedIndex
             .DataSource = itemDO.Items
@@ -169,6 +182,31 @@ Partial Class SPDPerpetualInventory
             ClearItemInfo()
         End If
     End Sub
+    Protected Sub lvSubs_PagePropertiesChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles lvSubs.PagePropertiesChanged
+        ClearItemInfo()
+        With lvItems
+            .SelectedIndex = -1
+            .DataSource = subItem.Items
+            .DataBind()
+        End With
+    End Sub
+
+    Protected Sub lvSubs_SelectedIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ListViewSelectEventArgs) Handles lvSubs.SelectedIndexChanging
+
+        With lvSubs
+            .SelectedIndex = e.NewSelectedIndex
+            .DataSource = subItem.Items
+            .DataBind()
+        End With
+
+        If e.NewSelectedIndex <> -1 Then
+            loadSubItemDetails(e.NewSelectedIndex)
+        Else
+            ClearSubItems()
+        End If
+    End Sub
+
+
     Private Sub loadItemDetails(ByVal pIndex As Integer)
         Try
             'Item selected, load the details
@@ -176,9 +214,6 @@ Partial Class SPDPerpetualInventory
             Dim item As cItem = itemDO.Items(lvItems.Items(pIndex).DataItemIndex)
             lblItemNo.Text = item.ItemNumber
             lblChargeInd.Text = item.Chargeable
-            lblFinanceDate.Text = IIf(item.DateLastSentToFinance <> "1/1/1900", Format(item.DateLastSentToFinance, "d"), " ")
-            lblLawsonDetail.Text = item.LawsonNumber
-            lblInterface.Text = item.IsPendingFinanceInterace
             lblComCode.Text = item.ComdtyCode
             lblSupplyType.Text = item.SupplyType
             lblItemType.Text = item.ItemType
@@ -226,11 +261,60 @@ Partial Class SPDPerpetualInventory
                 End With
             End If
 
+            subItem = New cSubstituteItemBinLocations(item.ItemId, IIf(Not IsNothing(Session("oUser")), Session("oUser"), New cUserInfo()))
+            lblSubOrigItem.Text = item.ItemId
+            If subItem.Count > 0 Then
+
+                With lvSubs
+                    .SelectedIndex = -1
+                    .DataSource = subItem.Items
+                    .DataBind()
+                End With
+                If subItem.Count = 1 Then
+                    With lvSubs
+                        .SelectedIndex = 0
+                        .DataSource = subItem.Items
+                        .DataBind()
+                    End With
+                    loadSubItemDetails(0)
+                End If
+            Else
+                'Clear the Items
+                With lvSubs
+                    .DataSource = Nothing
+                    .DataBind()
+                End With
+                ClearSubItems()
+                'lblMessage.Text = "No Items found matching the criteria entered!"
+                lblHasNoSubs.Text = "- NO SUBS EXIST FOR THIS ITEM"
+            End If
+
         Catch ex As Exception
             cUtilities.LogEvent("NOTE: This exception has been handled. CLASS: PMMInventoryQuantities.aspx.vb FUNCTION: LoadItemDetails ERROR: " & ex.Message, Diagnostics.EventLogEntryType.Error, 50000)
 
         End Try
     End Sub
+
+    Private Sub loadSubItemDetails(ByVal pIndex As Integer)
+        Try
+            'Sub Item selected, load the details
+            Dim item As cItem = subItem.Items(lvItems.Items(pIndex).DataItemIndex)
+
+            If (item.Bins.Count > 0) And (item.Status <> 3) Then
+                'load the inventory data
+                With gvSubItem
+                    .DataSource = item.Bins
+                    .DataBind()
+                End With
+            End If
+
+        Catch ex As Exception
+            cUtilities.LogEvent("NOTE: This exception has been handled. CLASS: PMMInventoryQuantities.aspx.vb FUNCTION: LoadItemDetails ERROR: " & ex.Message, Diagnostics.EventLogEntryType.Error, 50000)
+
+        End Try
+    End Sub
+
+
     Private Sub ClearItemInfo()
         pItemInfo.Visible = False
 
@@ -251,6 +335,15 @@ Partial Class SPDPerpetualInventory
         End With
 
 
+    End Sub
+
+    Private Sub ClearSubItems()
+        'clare the sub item data
+        With gvSubItem
+            .DataSource = Nothing
+            .DataBind()
+        End With
+        lblHasNoSubs.Text = String.Empty
     End Sub
 
     Protected Sub ddlVendors_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlVendors.SelectedIndexChanged

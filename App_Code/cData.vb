@@ -122,6 +122,92 @@ Public Class cData
 
     End Function
 
+    Public Shared Function GetSubBinQuantities(ByVal itemId As String) As DataSet
+
+        Dim sql As StringBuilder = New StringBuilder
+
+
+        sql.Append("Select s.SUB_ITM_ID ITEM_ID, s.SUB_ITM_ID ITEM_NO, i.DESCR60 ITEM_DESC,  isnull(mi.MFG_ITM_ID, 'UNKNOWN') MFR_CTLG_NO, isnull(m.DESCR60,'') MFR_NAME, c.DESCR+' ('+c.CATEGORY_CD+')'	COMDTY_CD " & vbCrLf)
+        sql.Append(", isnull(lt.DESCR, '')																		LOC_NAME " & vbCrLf)
+        sql.Append(",isnull(piv.STORAGE_AREA+' ' + piv.STOR_LEVEL_1+'-'+piv.STOR_LEVEL_2 " & vbCrLf)
+        sql.Append(" +'-'+piv.STOR_LEVEL_3+' '+ piv.STOR_LEVEL_4, '')									BIN_LOC " & vbCrLf)
+        sql.Append(",cast(isnull(piv.QTY, 0) as decimal(18,2))																LOC_QTY" & vbCrLf)
+        sql.Append(", isnull(um.UNIT_OF_MEASURE, '')																LOC_UOM " & vbCrLf)
+        sql.Append(",''																				CORP_NAME " & vbCrLf)
+        sql.Append(", isnull(v.NAME1, '')																		VEND_NAME " & vbCrLf)
+        sql.Append(",isnull(iv.ITM_ID_VNDR, '')																	VEND_CTLG_NO " & vbCrLf)
+        sql.Append(",case when isnull(ei.SE_CHARGE_ITEM_FLG,'N' ) = 'Y' then 1 " & vbCrLf)
+        sql.Append("Else 0 End																	CHARGEABLE " & vbCrLf)
+        sql.Append(",a.PRICE_LIST																	COST " & vbCrLf)
+        sql.Append(",case  " & vbCrLf)
+        sql.Append("when ei.SE_CHARGE_UOM = ' ' then i.UNIT_MEASURE_STD " & vbCrLf)
+        sql.Append("Else ei.SE_CHARGE_UOM End													PATIENT_UOM	 " & vbCrLf)
+        sql.Append(",''																				SENT_TO_FINANCE " & vbCrLf)
+        sql.Append(",isnull(i.ITM_STATUS_CURRENT, '')															ITEM_STATUS " & vbCrLf)
+        sql.Append(",''																				LAWSON_NO " & vbCrLf)
+        sql.Append(",isnull(i.DESCR, '')																		DESCR1 " & vbCrLf)
+        sql.Append(",isnull((select XLATLONGNAME from XLATTABLE_VW where FIELDNAME = 'SE_SUPPLY_TYPE' " & vbCrLf)
+        sql.Append("And FIELDVALUE = ei.SE_SUPPLY_TYPE And EFF_STATUS = 'A'  " & vbCrLf)
+        sql.Append("And EFFDT = (select MAX(EFFDT) from XLATTABLE_VW where FIELDNAME = 'SE_SUPPLY_TYPE'	and FIELDVALUE = ei.SE_SUPPLY_TYPE  " & vbCrLf)
+        sql.Append("And EFF_STATUS = 'A' and EFFDT <= GETDATE()) ), '')							SUPPLY_TYPE	 " & vbCrLf)
+        sql.Append(",isnull((select XLATLONGNAME from XLATTABLE_VW where FIELDNAME = 'SE_ITEM_TYPE' " & vbCrLf)
+        sql.Append("And FIELDVALUE = ei.SE_ITEM_TYPE And EFF_STATUS = 'A'  and EFFDT = (select MAX(EFFDT) from XLATTABLE_VW where FIELDNAME " & vbCrLf)
+        sql.Append(" = 'SE_ITEM_TYPE'	and FIELDVALUE = ei.SE_ITEM_TYPE " & vbCrLf)
+        sql.Append("And EFF_STATUS = 'A' and EFFDT <= GETDATE()) ), '')							ITEM_TYPE					 							 " & vbCrLf)
+        sql.Append(",1																				LOC_STAT " & vbCrLf)
+        sql.Append("From PS_SUBSTITUTE_ITM s" & vbCrLf)
+        sql.Append("inner Join PS_MASTER_ITEM_TBL i on i.SETID = s.SETID And i.INV_ITEM_ID = s.SUB_ITM_ID" & vbCrLf)
+        sql.Append("Left outer join PS_SE_IN_ITEM_EPIC ei (nolock) on ei.SETID = i.SETID And ei.INV_ITEM_ID = i.INV_ITEM_ID " & vbCrLf)
+        sql.Append("Left outer join PS_INV_ITEM_UOM um (nolock) on um.INV_ITEM_ID = i.INV_ITEM_ID And um.SETID = i.SETID And um.DFLT_UOM_STOCK = 'Y' " & vbCrLf)
+        sql.Append("Left outer join PS_ITEM_MFG mi (nolock) on mi.SETID = i.SETID And mi.INV_ITEM_ID = i.INV_ITEM_ID And mi.PREFERRED_MFG = 'Y' " & vbCrLf)
+        sql.Append("Left outer join PS_MANUFACTURER m (nolock) on m.SETID = mi.SETID And m.MFG_ID = mi.MFG_ID " & vbCrLf)
+        sql.Append("Left outer join PS_ITM_VENDOR iv (nolock) on iv.SETID = i.SETID And iv.INV_ITEM_ID = i.INV_ITEM_ID And iv.ITM_VNDR_PRIORITY = 1 " & vbCrLf)
+        sql.Append("Left outer join PS_ITM_VENDOR_MFG im (nolock) on im.SETID = iv.SETID And im.INV_ITEM_ID = iv.INV_ITEM_ID And im.VENDOR_SETID = 'SHARE' " & vbCrLf)
+        sql.Append("And im.VENDOR_ID = iv.VENDOR_ID  And im.PREFERRED_MFG = 'Y' " & vbCrLf)
+        sql.Append("And im.VNDR_LOC = iv.ITMV_PRIORITY_LOC " & vbCrLf)
+        sql.Append("Left outer join PS_MANUFACTURER vm (nolock) on vm.SETID = 'SHARE' and vm.MFG_ID = im.MFG_ID  " & vbCrLf)
+        sql.Append("Left outer join PS_VNDR_VNDSET_VW v (nolock) on v.VENDOR_SETID = iv.VENDOR_SETID And v.VENDOR_ID = iv.VENDOR_ID" & vbCrLf)
+        sql.Append("Left outer join PS_PURCH_ITEM_ATTR a (nolock) on a.SETID = i.SETID And a.INV_ITEM_ID = i.INV_ITEM_ID " & vbCrLf)
+        sql.Append("Left outer join PS_ITEM_CAT_TBL_VW c (nolock) on i.SETID = c.SETID And i.CATEGORY_ID = c.CATEGORY_ID And c.EFFDT =" & vbCrLf)
+        sql.Append("(select MAX(EFFDT) from PS_ITEM_CAT_TBL_VW where SETID = c.SETID And CATEGORY_ID = c.CATEGORY_ID And EFFDT <= GETDATE()) " & vbCrLf)
+        sql.Append("Left outer join PS_BU_ITEMS_INV bui on bui.INV_ITEM_ID = i.INV_ITEM_ID And bui.ITM_STATUS_CURRENT = 1  " & vbCrLf)
+        sql.Append("Left outer join PS_DEFAULT_LOC_INV dli on dli.BUSINESS_UNIT = bui.BUSINESS_UNIT And dli.INV_ITEM_ID = bui.INV_ITEM_ID	 " & vbCrLf)
+        sql.Append("Left outer join PS_PHYSICAL_INV piv on piv.BUSINESS_UNIT =bui.BUSINESS_UNIT And piv.INV_ITEM_ID = bui.INV_ITEM_ID	 " & vbCrLf)
+        sql.Append("Left outer join PS_BUS_UNIT_TBL_IN bti on bti.BUSINESS_UNIT = dli.BUSINESS_UNIT " & vbCrLf)
+        sql.Append("Left outer join PS_LOCATION_TBL lt on lt.LOCATION = bti.LOCATION And lt.SETID = 'SHARE' " & vbCrLf)
+        sql.Append("And lt.EFF_STATUS = 'A' and lt.EFFDT = (select max(EFFDT) from PS_LOCATION_TBL where SETID = lt.SETID and LOCATION = lt.LOCATION and EFFDT <= cast(getdate() as date))" & vbCrLf)
+        sql.Append("where i.ITM_STATUS_CURRENT = 1" & vbCrLf)
+        sql.Append("and isnull(piv.STORAGE_AREA+' ' + piv.STOR_LEVEL_1+'-'+piv.STOR_LEVEL_2 +'-'+piv.STOR_LEVEL_3+' '+ piv.STOR_LEVEL_4, '') <> ''" & vbCrLf)
+        sql.Append("And s.INV_ITEM_ID = '" & itemId & "'" & vbCrLf)
+        sql.Append("order by s.SUB_PRIORITY_NBR" & vbCrLf)
+
+
+        Dim myConnection As New SqlConnection(ConfigurationManager.AppSettings("ConnectionPSStringSupport"))
+
+
+        Dim myDataAdapter As New SqlDataAdapter(sql.ToString, myConnection)
+        myDataAdapter.SelectCommand.CommandType = CommandType.Text
+
+
+
+        myDataAdapter.SelectCommand.CommandTimeout = 200
+
+        Dim results As New System.Data.DataSet
+        Try
+            myDataAdapter.Fill(results)
+            results.Tables(0).TableName = "ItemBinLocations"
+            Return results
+        Catch ex As Exception
+            LogEvent("Exception Thrown by the following; Function: GetBinQuantities Class: cData Message: " & ex.Message, EventLogEntryType.Error, 50001)
+            Throw ex
+        Finally
+            myConnection.Close()
+            myDataAdapter.Dispose()
+            myConnection.Dispose()
+        End Try
+
+    End Function
+
 
     Public Shared Function GetParLocations(ByVal pmmNo As String) As DataSet
 

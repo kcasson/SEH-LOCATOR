@@ -1,4 +1,4 @@
-<%@ Page Language="VB" MasterPageFile="~/StEMMNoLeftNav.master" AutoEventWireup="true" CodeFile="PMMInventoryQuantities.aspx.vb" Inherits="SPDPerpetualInventory" title="PeopleSoft Location Quantities" %>
+<%@ Page Language="VB" MasterPageFile="~/StEMMNoLeftNav.master" AutoEventWireup="true" CodeFile="PMMInventoryQuantities.aspx.vb" Inherits="SPDPerpetualInventory" title="PeopleSoft Location Quantities" MaintainScrollPositionOnPostback="true" %>
 <%@ register TagPrefix="MMUC" TagName="PageLoadingDisplay" Src="Controls/PageLoadingDisplay.ascx"  %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
@@ -43,6 +43,7 @@
             dv.style.left = x;
 
         }
+
     </script>
 
 </asp:Content>
@@ -149,7 +150,7 @@
 
     <table><tr><td>&nbsp;</td><td>
     <asp:Panel ID="Panel1" runat="server" GroupingText="PeopleSoft Items" >
-<table width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td>&nbsp;</td><td>
+<table width="95%" cellpadding="0" cellspacing="0"><tr valign="top"><td>&nbsp;</td><td>
     <table width="90%" cellpadding="0" cellspacing="0">
     <tr ><td>&nbsp;</td></tr></table>
     <table cellpadding="0" cellspacing="0">
@@ -158,7 +159,7 @@
         <input type="text" id="hPMMNo" style="width:0px;" runat="server" /></td>
         <td class="itemlistheadsmall">
         <input style="width:100px;"  
-            id="InitControl" runat="server" type="text" maxlength="15" title="Enter all or part of Item number, press enter or click Search. All items containing this string will be returned.Example:(29927, 299, 27)"
+            id="InitControl" runat="server" type="text" maxlength="15" title="Enter all or part of Item number, press enter or click Search. All items containing this string will be returned.Example:(29927, 299, 27)" onkeypress="if (event.keyCode == 13){var btn = document.getElementById('btnSearch');btn.click();};"
                 class="itemlistheadsmall" /></td>
         <td class="itemlistitemsmall">&nbsp;</td><td align="right" class="itemlistheadsmall">Mfr Ctlg No:&nbsp;</td>
         <td style="display:none;" >
@@ -191,7 +192,6 @@
                 <table width="800px" cellpadding="1" cellspacing="1" border="1" ><tr><td colspan="6" class="errortextsmall">Click item number for item detail. (click on column header to sort.)</td></tr>
                     <tr class="headLabelSmall">
                         <td><nobr><asp:LinkButton id="lkItemNo" Text="Item No" runat="server" CommandArgument="ItemNumber"></asp:LinkButton></nobr></td>
-                        <td><nobr><asp:LinkButton id="lkLawsonNo" Text="Lawson No" runat="server" CommandArgument="LawsonNumber"></asp:LinkButton></nobr></td>
                         <td><nobr><asp:LinkButton id="lkCatNo" Text="Catalog No" runat="server" CommandArgument="ManufacturerNumber"></asp:LinkButton></nobr></td>
                         <td><nobr>Mfr</nobr></td>
                         <td><nobr><asp:LinkButton id="lkDescr" Text="Description" runat="server" CommandArgument="Description"></asp:LinkButton></nobr></td>
@@ -207,39 +207,56 @@
             </LayoutTemplate>
             <ItemTemplate>
                 <tr class="itemlistitemsmall">
-                    <td><asp:LinkButton id="SelectButton" runat="server" text='<%# Eval("ItemNumber") %>' CommandName="Select"></asp:LinkButton>&nbsp;</td><td><asp:Label runat="server" ID="lblLawson" Text='<%# Eval("LawsonNumber")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td><td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1") %>'></asp:Label></td></tr></ItemTemplate><AlternatingItemTemplate>
-                <tr class="itemlistitemaltsmall"><td><asp:LinkButton ID="SelectButton" runat="server" text='<%# Eval("ItemNumber") %>' CommandName="Select"></asp:LinkButton>&nbsp;</td><td><asp:Label runat="server" ID="lblLawson" Text='<%# Eval("LawsonNumber")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td><td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1")%>'></asp:Label></td></tr></AlternatingItemTemplate>
-                <SelectedItemTemplate><tr class="itemlistitemselectsmall"><td><asp:label runat="server" ID="lblItem" text='<%# Eval("ItemNumber") %>'></asp:label></td><td><asp:Label runat="server" ID="lblLawson" Text='<%# Eval("LawsonNumber")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td><td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td><td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1")%>'></asp:Label></td></tr></SelectedItemTemplate></asp:ListView></td></tr></table>
+                    <td><asp:LinkButton id="SelectButton" runat="server" text='<%# Eval("ItemNumber") %>' CommandName="Select"></asp:LinkButton>&nbsp;</td>
+                    <td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td>
+                    <td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1") %>'></asp:Label></td>
+
+                </tr></ItemTemplate>
+            <AlternatingItemTemplate>
+                <tr class="itemlistitemaltsmall"><td><asp:LinkButton ID="SelectButton" runat="server" text='<%# Eval("ItemNumber") %>' CommandName="Select"></asp:LinkButton>&nbsp;</td>
+                    <td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td>
+                    <td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1")%>'></asp:Label></td>
+
+                </tr></AlternatingItemTemplate>
+                <SelectedItemTemplate><tr class="itemlistitemselectsmall"><td><asp:label runat="server" ID="lblItem" text='<%# Eval("ItemNumber") %>'></asp:label></td>
+                    <td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td>
+                    <td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1")%>'></asp:Label></td>
+                    </tr></SelectedItemTemplate></asp:ListView></td></tr>
+
+    </table>
                     
                     <table><tr><td><asp:Label ID="lblMessage" runat="server" EnableViewState="false" CssClass="errortextsmall"></asp:Label></td></tr>
       <tr id="trItem" runat="server"><td>
-        <asp:Panel ID="pItemInfo" runat="server" Visible="false" GroupingText="Item Information" Width="800px"><table cellpadding="0" cellspacing="0" width="100%">
+        <asp:Panel ID="pItemInfo" runat="server" Visible="false" GroupingText="Item Information" Width="700px"><table cellpadding="0" cellspacing="0" width="100%">
                 <tr valign="top">
                     <td class="itemlistheadsmall" align="right">Item Number:&nbsp;</td>
                     <td><asp:Label ID="lblItemNo" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
-                    <td class="itemlistheadsmall" align="right" >Lawson No:&nbsp;</td>
-                    <td align="left"><asp:Label ID="lblLawsonDetail" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
                     <td align="right" class="itemlistheadsmall">Commodity Code:&nbsp;</td><td><asp:Label ID="lblComCode" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
-                    <td class="itemlistheadsmall" align="right">&nbsp;Pending Interface:</td>
-                    <td>&nbsp;<asp:Label ID="lblInterface" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
+                    
                 </tr>
                 <tr valign="top">
                     <td class="itemlistheadsmall" align="right">Chargeable:&nbsp;</td>
                     <td><asp:Label  ID="lblChargeInd" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
                     <td align="right" class="itemlistheadsmall">Item Status:&nbsp;</td>
                     <td><asp:Label ID="lblStatus" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
-                    <td class="itemlistheadsmall" align="right">&nbsp;Last Date Sent To Finance:&nbsp;</td>
-                    <td><asp:Label Width="150px" ID="lblFinanceDate" runat="server" CssClass="itemlistitemsmall" ></asp:Label> </td>
                 </tr>
                 <tr valign="top">
                     <td align="right" class="itemlistheadsmall">Item Type:&nbsp;</td><td><asp:Label ID="lblItemType" runat="server" CssClass="itemlistitemsmall"></asp:Label>&nbsp;</td>
-                    <td colspan="2" align="right" class="itemlistheadsmall">Supply Type:&nbsp;</td><td><asp:Label ID="lblSupplyType" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
+                    <td align="right" class="itemlistheadsmall">Supply Type:&nbsp;</td><td><asp:Label ID="lblSupplyType" runat="server" CssClass="itemlistitemsmall"></asp:Label></td>
                 </tr>
-                </table><table cellpadding="0" cellspacing="0" width="100%">
+                </table>
+            
+            <table cellpadding="0" cellspacing="0" width="755px">
                 <tr><td colspan="3"><hr /></td></tr>
                 <tr style="display:none;">
                     <td width="50%" valign="top" class="itemlisthead">
-                       <table style="border-style:groove;" cellpadding="0" cellspacing="0" width="98%">
+                       <table style="border-style:groove;" cellpadding="0" cellspacing="0" width="100%">
                         <tr height="1px"><td>Vendor</td></tr>
                         <tr height="1px"><td><hr /></td></tr>
                         <tr ><td>
@@ -260,8 +277,9 @@
                     </tr>
                     </tr>
                     </tr>
+                    </tr>
                     <td class="itemlisthead" valign="top">                       
-                    <table style="border-style:groove;" cellpadding="0" cellspacing="0" width="98%">
+                    <table style="border-style:groove;" cellpadding="0" cellspacing="0" width="100%">
                         <tr height="1px"><td>Inventory</td></tr>
                         <tr height="1px"><td><hr /></td></tr>
                         <tr><td>
@@ -278,17 +296,101 @@
 
                     </table>
                     </td>
-                </tr>
-              <td><!--<asp:LinkButton ID="lkPO" runat="server" Text="Purchase Orders"></asp:LinkButton>&nbsp;&nbsp;<asp:LinkButton ID="lkInvoices" runat="server" Text="Invoices"></asp:LinkButton>--></td>
-                <tr><td> </td></tr>
-                <tr><td> </td></tr>
+    <!-- Start Substitute items section ***********************************************************************************************************************************************************-->
+    <tr><td><hr /></td></tr>
+    <!-- hide when no subs available for item -->
+    <tr><td style="border-top:solid;border-bottom:solid;border-left:solid;border-right:solid;border-color:red;">
+    <table width="100%" style="border-color:red;">
+      <tr>
+        <td class="itemlisthead">Item <asp:Label ID="lblSubOrigItem" runat="server" CssClass="itemlisthead"></asp:Label> Substitute Item(s) <asp:Label ID="lblHasNoSubs" runat="server" CssClass="itemlisthead" ></asp:Label></td></tr>
+            <tr align="center"><td>
+     <table  width="100%" cellpadding="0" cellspacing="0" border="1" ><tr><td>
+        <asp:ListView ID="lvSubs" runat="server"    >
+            <LayoutTemplate>
+                <table width="750px" cellpadding="1" cellspacing="1" border="1" ><tr><td colspan="6" class="errortextsmall" align="left">Click item number for item detail. Ordered by Priority</td></tr>
+                    <tr class="headLabelSmall">
+                        <td><nobr>Item No</nobr></td>
+                        <td><nobr>Catalog No</nobr></td>
+                        <td><nobr>Mfr</nobr></td>
+                        <td><nobr>Description</nobr></td>
+                        <td><nobr>Desc 1</nobr></td></tr>
+                    <tr runat="server" id="itemPlaceholder"></tr>
+                </table>
+            <asp:DataPager ID="DataPager1" runat="server" PageSize="4" PagedControlID="lvItems">
+            <Fields>
+              <asp:NumericPagerField CurrentPageLabelCssClass="itemlistheadsmall" NextPreviousButtonCssClass="itemlistheadsmall"   ButtonCount="10"
+                NumericButtonCssClass="itemlistheadsmall" PreviousPageText="<<" NextPageText=">>"  />
+            </Fields> 
+          </asp:DataPager>
+            </LayoutTemplate>
+            <ItemTemplate>
+                <tr class="itemlistitemsmall">
+                    <td><asp:LinkButton id="SelectButton" runat="server" text='<%# Eval("ItemNumber") %>' CommandName="Select" ForeColor="Red" Font-Bold="true"></asp:LinkButton>&nbsp;</td>
+                    <td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td>
+                    <td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1") %>'></asp:Label></td>
+
+                </tr></ItemTemplate>
+            <AlternatingItemTemplate>
+                <tr class="itemlistitemaltsmall"><td><asp:LinkButton ID="SelectButton" runat="server" text='<%# Eval("ItemNumber") %>' CommandName="Select" ForeColor="Red" Font-Bold="true"></asp:LinkButton>&nbsp;</td>
+                    <td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td>
+                    <td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1")%>'></asp:Label></td>
+
+                </tr></AlternatingItemTemplate>
+                <SelectedItemTemplate><tr class="itemlistitemselectsmall"><td><asp:label runat="server" ID="lblItem" ForeColor="Red" Font-Bold="true" text='<%# Eval("ItemNumber") %>'></asp:label></td>
+                    <td><asp:Label runat="server" ID="lblCat" Text='<%# Eval("MfrNumber")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblMfr" Text='<%# Eval("MfrName")%>'></asp:Label></td>
+                    <td><asp:Label runat="server" ID="lblDesc" Text='<%# Eval("ItemDesc")%>'></asp:Label></td>
+                    <td><asp:Label ID="lblDesc1" runat="server" Text='<%# Eval("ItemDesc1")%>'></asp:Label></td>
+                    </tr></SelectedItemTemplate></asp:ListView></td></tr>
+
+    </table>
+                </td></tr>
+
+    <tr><td class="itemlisthead" valign="top">                       
+    <table style="border-style:groove;" cellpadding="0" cellspacing="0" width="100%">
+        <tr height="1px"><td>Substitute Item Inventory</td></tr>
+        <tr height="1px"><td><hr /></td></tr>
+        <tr><td>
+        <asp:GridView  ID="gvSubItem" runat="server" AutoGenerateColumns="false" AlternatingRowStyle-CssClass="itemlistitemalt"
+                HeaderStyle-CssClass="headLabelSmall" RowStyle-CssClass="itemlistitem" CellPadding="1" CellSpacing="1" BorderWidth="1" BorderStyle="Ridge" Width="100%"  >
+                <Columns>
+                <asp:BoundField HeaderText="Quantity" DataField="BinLocationAmount" NullDisplayText="" />
+                <asp:BoundField HeaderText="Bin" DataField="BinLocation" NullDisplayText="" />
+                <asp:BoundField HeaderText="Inventory" DataField="BinLocationDesc" NullDisplayText="" />
+                <asp:BoundField HeaderText="Status" DataField="Status" NullDisplayText="" />
+                </Columns>
+        </asp:GridView>
+        </td></tr>
+
+    </table>
+    </td>
+        
+</tr>
+        </table></td>
+        <!-- hide when no subs available for item (END) -->
+    </tr>
+    <!-- End Substitute items section ***********************************************************************************************************************************************************-->
+             <tr>
+                 <td>
+                     <!--<asp:LinkButton ID="lkPO" runat="server" Text="Purchase Orders"></asp:LinkButton>&nbsp;&nbsp;<asp:LinkButton ID="lkInvoices" runat="server" Text="Invoices"></asp:LinkButton>--></td>
+                 <tr>
+                     <td></td>
+                 </tr>
+                 <tr>
+                     <td></td>
+                 </tr>
+                </tr> 
            </table>
         <table>
             <tr><td> </td></tr>
                 <tr><td> </td></tr>
         </table>
             <table width="100%"><tr><td>
-               <table style="border-style:groove; font-weight:bolder; font-size:small;" cellpadding="0" cellspacing="0" width="98%" >
+               <table style="border-style:groove; font-weight:bolder; font-size:small;" cellpadding="0" cellspacing="0" width="100%" >
                         <tr height="1px"><td>Business Unit 12000 Par Locations</td></tr>
                         <tr height="1px"><td><hr /></td></tr>
                         <tr style="text-align:left;"><td>
