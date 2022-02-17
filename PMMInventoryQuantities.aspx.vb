@@ -310,7 +310,8 @@ Partial Class SPDPerpetualInventory
 
         Catch ex As Exception
             cUtilities.LogEvent("NOTE: This exception has been handled. CLASS: PMMInventoryQuantities.aspx.vb FUNCTION: LoadItemDetails ERROR: " & ex.Message, Diagnostics.EventLogEntryType.Error, 50000)
-
+            gvSubItem.DataSource = Nothing
+            gvSubItem.DataBind()
         End Try
     End Sub
 

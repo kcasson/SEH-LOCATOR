@@ -177,7 +177,7 @@ Public Class cData
         sql.Append("Left outer join PS_LOCATION_TBL lt on lt.LOCATION = bti.LOCATION And lt.SETID = 'SHARE' " & vbCrLf)
         sql.Append("And lt.EFF_STATUS = 'A' and lt.EFFDT = (select max(EFFDT) from PS_LOCATION_TBL where SETID = lt.SETID and LOCATION = lt.LOCATION and EFFDT <= cast(getdate() as date))" & vbCrLf)
         sql.Append("where i.ITM_STATUS_CURRENT = 1" & vbCrLf)
-        sql.Append("and isnull(piv.STORAGE_AREA+' ' + piv.STOR_LEVEL_1+'-'+piv.STOR_LEVEL_2 +'-'+piv.STOR_LEVEL_3+' '+ piv.STOR_LEVEL_4, '') <> ''" & vbCrLf)
+        'sql.Append("and isnull(piv.STORAGE_AREA+' ' + piv.STOR_LEVEL_1+'-'+piv.STOR_LEVEL_2 +'-'+piv.STOR_LEVEL_3+' '+ piv.STOR_LEVEL_4, '') <> ''" & vbCrLf)
         sql.Append("And s.INV_ITEM_ID = '" & itemId & "'" & vbCrLf)
         sql.Append("order by s.SUB_PRIORITY_NBR" & vbCrLf)
 
